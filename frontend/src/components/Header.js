@@ -1,12 +1,13 @@
 // src/components/Header.js
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Header.css';
 
 const Header = ({ handleSearch }) => {
   return (
     <header className="header">
       <div className="header-logo">
-        <h1><a href="#home">Flügelzange</a></h1>
+        <h1><Link to="/">Flügelzange</Link></h1>
       </div>
       <div className="header-search">
         <input
@@ -14,16 +15,12 @@ const Header = ({ handleSearch }) => {
           placeholder="Search articles..."
           onChange={(e) => handleSearch(e.target.value)}
         />
-        
       </div>
       <nav className="header-nav">
         <ul>
-        
-        <li><a href="#login">Login</a></li>
+          <li><Link to="/login">Login</Link></li>
         </ul>
-        </nav>
-        
-      
+      </nav>
     </header>
   );
 }
