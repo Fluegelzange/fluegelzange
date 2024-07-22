@@ -40,16 +40,24 @@ app.get('/articles', async (req, res) => {
   }
 });
 
-app.get('/articles/header/:header', async (req, res) => {
+
+
+
+app.get('/articles/:id', async (req, res) => {
   try {
-    const header = req.params.header;
-    const articles = await client.db("fluegelzange").collection("articles").find({ header: { $regex: header, $options: 'i' } }).toArray();
-    res.json(articles);
+    const articleId = req.params.id;
+    console.log(articleId);
+    const article = await client.db("fluegelzange").collection("articles").findOne({ _id: new ObjectId(articleId) });
+    console.log("Artikel", article);
+    if (!article) {
+      return res.status(404).send("Article not found");
+    }
+    res.json(article);
   } catch (err) {
-    console.error("Error fetching articles by header: ", err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(err);
   }
 });
+
 
 
 
