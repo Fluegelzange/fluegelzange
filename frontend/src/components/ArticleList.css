@@ -1,7 +1,0 @@
-/* src/components/ArticleList.css */
-.article-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-}
