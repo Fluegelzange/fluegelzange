@@ -30,6 +30,9 @@ run().catch(console.dir);
 app.use(cors());
 app.use(express.json());
 
+
+
+//++++++++++++++++++++Articles++++++++++++++++++++++
 app.get('/articles', async (req, res) => {
   try {
     const articles = await client.db("fluegelzange").collection("articles").find().toArray();
@@ -39,9 +42,6 @@ app.get('/articles', async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
-
-
 
 app.get('/articles/:id', async (req, res) => {
   try {
@@ -58,9 +58,6 @@ app.get('/articles/:id', async (req, res) => {
   }
 });
 
-
-
-
 app.post('/articles', async (req, res) => {
   try {
     const newArticle = {
@@ -75,6 +72,30 @@ app.post('/articles', async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+
+//++++++++++++++++++++++++++++++USer++++++++++++++++++++++
+app.post('/user', async (req, res) => {
+  try {
+    const newArticle = {
+      _id: new ObjectId(),
+      username: req.body.username,
+      userrole: "user",
+      usermail: req.body.email,
+      passwort: req.body.password,
+      verifziert:false
+    };
+    const result = await client.db("fluegelzange").collection("user").insertOne(newArticle);
+    res.status(201).json(newArticle);
+  } catch (err) {
+    console.error("Error creating new article: ", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+
 
 app.listen(port, () => {
   console.log(`Server läuft auf http://localhost:${port}`);

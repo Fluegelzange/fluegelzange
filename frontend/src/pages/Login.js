@@ -1,5 +1,6 @@
 // src/components/Login.js
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
@@ -30,6 +31,7 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
+      <p>Don't have an account? <Link to="/signin">Sign In</Link></p>
     </div>
   );
 }

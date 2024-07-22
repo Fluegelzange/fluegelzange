@@ -5,6 +5,7 @@ import './App.css';
 import Article from './components/Article';
 import Header from './components/Header';
 import Login from './pages/Login';
+import SignIn from './pages/SignIn';
 import { createArticle, fetchArticleById, fetchArticles } from './services/api';
 
 function App() {
@@ -44,7 +45,6 @@ function App() {
     }
   };
 
-
   return (
     <Router>
       <div className="App">
@@ -69,14 +69,14 @@ function App() {
                 </form>
 
                 <form onSubmit={handleFetchById} className="article-form">
-          <input
-            type="text"
-            placeholder="Article ID"
-            value={articleId}
-            onChange={(e) => setArticleId(e.target.value)}
-          />
-          <button type="submit">Artikel abrufen</button>
-        </form>
+                  <input
+                    type="text"
+                    placeholder="Article ID"
+                    value={articleId}
+                    onChange={(e) => setArticleId(e.target.value)}
+                  />
+                  <button type="submit">Artikel abrufen</button>
+                </form>
 
                 {articles.length > 0 && (
                   <Article article={singleArticle || articles[articles.length - 1]} />
@@ -84,6 +84,7 @@ function App() {
               </>
             } />
             <Route path="/login" element={<Login />} />
+            <Route path="/signin" element={<SignIn />} />
           </Routes>
         </main>
         <footer>
