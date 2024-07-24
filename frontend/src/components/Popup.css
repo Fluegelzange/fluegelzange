@@ -1,0 +1,34 @@
+/* src/components/Popup.css */
+
+.popup {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #003366;
+  color: white;
+  padding: 1rem;
+  border-radius: 4px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeInOut 4s forwards;
+}
+
+.popup-inner {
+  display: flex;
+  align-items: center;
+}
+
+.popup p {
+  margin: 0;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}

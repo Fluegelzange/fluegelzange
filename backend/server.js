@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const EmailService = require('./services/emailService'); // Importiere den EmailService
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://user1:user@cluster0.bge3kpm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const app = express();
@@ -75,25 +76,58 @@ app.post('/articles', async (req, res) => {
 
 
 
-//++++++++++++++++++++++++++++++USer++++++++++++++++++++++
+//++++++++++++++++++++++++++++++User++++++++++++++++++++++
 app.post('/user', async (req, res) => {
   try {
-    const newArticle = {
+    const newUser = {
       _id: new ObjectId(),
       username: req.body.username,
       userrole: "user",
       usermail: req.body.email,
       passwort: req.body.password,
-      verifziert:false
+      verifziert: false
     };
-    const result = await client.db("fluegelzange").collection("user").insertOne(newArticle);
-    res.status(201).json(newArticle);
+
+    const result = await client.db("fluegelzange").collection("user").insertOne(newUser);
+    res.status(201).json(newUser);
+
+    const token = newUser._id.toString();
+
+    // Bestätigungs-E-Mail senden
+    await EmailService.sendConfirmationEmail(newUser.usermail, newUser.username, token);
+
   } catch (err) {
-    console.error("Error creating new article: ", err);
+    console.error("Error creating new user: ", err);
     res.status(500).send("Internal Server Error");
   }
 });
 
+
+// Route zur Verifizierung des Benutzers
+app.get('/confirm-email', async (req, res) => {
+  try {
+    const token = req.query.token;
+    if (!token) {
+      return res.status(400).send('Ungültiger Token');
+    }
+
+    const user = await client.db("fluegelzange").collection("user").findOne({ _id: new ObjectId(token) });
+    if (!user) {
+      return res.status(404).send('Nutzer nicht gefunden');
+    }
+
+    await client.db("fluegelzange").collection("user").updateOne(
+      { _id: new ObjectId(token) },
+      { $set: { verifziert: true } }
+    );
+
+    // Umleitung zur Startseite mit einem Verifizierungsparameter
+    res.redirect('http://localhost:3000');
+  } catch (err) {
+    console.error("Fehler bei der E-Mail-Bestätigung: ", err);
+    res.status(500).send("Interner Serverfehler");
+  }
+});
 
 
 

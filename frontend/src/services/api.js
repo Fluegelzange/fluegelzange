@@ -60,5 +60,7 @@ export const createUser = async (user) => {
 
 
   const response = await axios.post(`${API_URL}/user`, usermithash);
+    
+  
   return response.data;
 };

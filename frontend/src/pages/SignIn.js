@@ -15,14 +15,14 @@ const SignIn = () => {
     
     const newUser = { username, email, password };
     const result = await createUser(newUser);
-    alert('User erfolgreich hinzugefügt!');
+    console.log('User erfolgreich hinzugefügt!');
     alert(result);
 
     // Hier kannst du die Sign-In-Logik implementieren
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
     } else {
-      alert(`Username: ${username}, Email: ${email}, Password: ${password}`);
+      console.log(`Username: ${username}, Email: ${email}, Password: ${password}`);
     }
   };
 
