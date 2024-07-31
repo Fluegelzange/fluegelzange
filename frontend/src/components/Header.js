@@ -1,9 +1,18 @@
-// src/components/Header.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../App';
 import './Header.css';
 
 const Header = ({ handleSearch }) => {
+  const { isAuthenticated, setIsAuthenticated, setPopupMessage } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setPopupMessage('Erfolgreich ausgeloggt!');
+    navigate('/');
+  };
+
   return (
     <header className="header">
       <div className="header-logo">
@@ -18,7 +27,11 @@ const Header = ({ handleSearch }) => {
       </div>
       <nav className="header-nav">
         <ul>
-          <li><Link to="/login">Login</Link></li>
+          {isAuthenticated ? (
+            <li><button onClick={handleLogout}>Logout</button></li>
+          ) : (
+            <li><Link to="/login">Login</Link></li>
+          )}
         </ul>
       </nav>
     </header>

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
 const EmailService = require('./services/emailService'); // Importiere den EmailService
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://user1:user@cluster0.bge3kpm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -94,7 +95,7 @@ app.post('/user', async (req, res) => {
     const token = newUser._id.toString();
 
     // Bestätigungs-E-Mail senden
-    await EmailService.sendConfirmationEmail(newUser.usermail, newUser.username, token);
+    //await EmailService.sendConfirmationEmail(newUser.usermail, newUser.username, token);
 
   } catch (err) {
     console.error("Error creating new user: ", err);
@@ -103,31 +104,78 @@ app.post('/user', async (req, res) => {
 });
 
 
-// Route zur Verifizierung des Benutzers
+//Verifizierung+Redirect
 app.get('/confirm-email', async (req, res) => {
   try {
     const token = req.query.token;
     if (!token) {
+      console.error('Token fehlt in der Anfrage');
       return res.status(400).send('Ungültiger Token');
     }
 
     const user = await client.db("fluegelzange").collection("user").findOne({ _id: new ObjectId(token) });
     if (!user) {
+      console.error('Nutzer nicht gefunden mit dem Token:', token);
       return res.status(404).send('Nutzer nicht gefunden');
     }
 
-    await client.db("fluegelzange").collection("user").updateOne(
+    // Logging vor dem Update
+    console.log('Nutzer vor Update:', user);
+
+    const updateResult = await client.db("fluegelzange").collection("user").updateOne(
       { _id: new ObjectId(token) },
       { $set: { verifziert: true } }
     );
 
-    // Umleitung zur Startseite mit einem Verifizierungsparameter
-    res.redirect('http://localhost:3000');
+    // Logging des Ergebnisses von updateOne
+    console.log('Update-Ergebnis:', updateResult);
+
+    if (updateResult.modifiedCount === 1) {
+      console.log('Nutzer erfolgreich verifiziert:', token);
+      // Umleitung zur Startseite mit verified Parameter
+      return res.redirect('http://localhost:3000?verified=true');
+    } else if (updateResult.matchedCount === 1 && user.verifziert) {
+      console.log('Nutzer war bereits verifiziert:', token);
+      // Umleitung zur Startseite mit verified Parameter
+      return res.redirect('http://localhost:3000?verified=true');
+    } else {
+      console.error('Fehler beim Aktualisieren des Nutzers:', token);
+      return res.status(500).send("Fehler beim Aktualisieren des Nutzers");
+    }
   } catch (err) {
     console.error("Fehler bei der E-Mail-Bestätigung: ", err);
+    return res.status(500).send("Interner Serverfehler");
+  }
+});
+
+//++++++++++USER++LOGIN++++++++++++++++++++++++
+app.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Benutzer in der Datenbank suchen
+    const user = await client.db("fluegelzange").collection("user").findOne({ username });
+
+    if (!user) {
+      console.error("Benutzer nicht gefunden:", username);
+      return res.status(400).json("Benutzername oder Passwort ist falsch");
+    }
+
+    // Passwort überprüfen
+    const isPasswordValid = await bcrypt.compare(password, user.passwort);
+    if (!isPasswordValid) {
+      console.error("Ungültiges Passwort für Benutzer:", username);
+      return res.status(400).json("Benutzername oder Passwort ist falsch");
+    }
+
+    // Wenn alles korrekt ist, Rückmeldung geben
+    res.status(200).json({ message: "Login erfolgreich", userId: user._id });
+  } catch (err) {
+    console.error("Fehler beim Login:", err);
     res.status(500).send("Interner Serverfehler");
   }
 });
+
 
 
 

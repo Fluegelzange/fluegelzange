@@ -1,5 +1,4 @@
-// src/App.js
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import Article from './components/Article';
@@ -9,24 +8,40 @@ import Login from './pages/Login';
 import SignIn from './pages/SignIn';
 import { createArticle, fetchArticleById, fetchArticles } from './services/api';
 
+export const AuthContext = createContext();
+
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+
+  useEffect(() => {
+    if (popupMessage) {
+      const timer = setTimeout(() => {
+        setPopupMessage('');
+      }, 3000); // Popup nach 3 Sekunden zurücksetzen
+
+      return () => clearTimeout(timer);
+    }
+  }, [popupMessage]);
+
   return (
-    <Router>
-      <div className="App">
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/confirm-email" element={<ConfirmEmail />} />
-          </Routes>
-        </main>
-        <footer>
-          <p><a href="#about">About Flügelzange</a></p>
-        </footer>
-      </div>
-    </Router>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, setPopupMessage }}>
+      <Router>
+        <div className="App">
+          <Header />
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/confirm-email" element={<ConfirmEmail />} />
+            </Routes>
+          </main>
+          <Footer />
+          {popupMessage && <Popup message={popupMessage} />}
+        </div>
+      </Router>
+    </AuthContext.Provider>
   );
 }
 
@@ -36,7 +51,7 @@ function Home() {
   const [value, setValue] = useState('');
   const [articleId, setArticleId] = useState('');
   const [singleArticle, setSingleArticle] = useState(null);
-  const [popupMessage, setPopupMessage] = useState('');
+  const { setPopupMessage } = useContext(AuthContext);
 
   useEffect(() => {
     const getArticles = async () => {
@@ -70,7 +85,6 @@ function Home() {
 
   return (
     <>
-      {popupMessage && <Popup message={popupMessage} />}
       <form onSubmit={handleSubmit} className="article-form">
         <input
           type="text"
@@ -112,15 +126,15 @@ function ConfirmEmail() {
     const token = queryParams.get('token');
 
     if (token) {
-      fetch(`http://localhost:3000/confirm-email?token=${token}`)
+      fetch(`http://localhost:5000/confirm-email?token=${token}`)
         .then(response => {
           if (response.ok) {
             setPopupMessage('Ihre E-Mail-Adresse wurde erfolgreich verifiziert!');
           } else {
-            setPopupMessage('Fehler bei der E-Mail-Verifizierung.');
+            response.text().then(text => setPopupMessage(`Fehler bei der E-Mail-Verifizierung: ${text}`));
           }
         })
-        .catch(() => setPopupMessage('Fehler bei der E-Mail-Verifizierung.'));
+        .catch(error => setPopupMessage(`Fehler bei der E-Mail-Verifizierung: ${error.message}`));
     }
   }, [location.search]);
 
@@ -128,6 +142,25 @@ function ConfirmEmail() {
     <div>
       {popupMessage && <Popup message={popupMessage} />}
     </div>
+  );
+}
+
+function Footer() {
+  const location = useLocation();
+  const [popupMessage, setPopupMessage] = useState('');
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.get('verified') === 'true') {
+      setPopupMessage('Ihre E-Mail-Adresse wurde erfolgreich verifiziert!');
+    }
+  }, [location]);
+
+  return (
+    <footer>
+      {popupMessage && <Popup message={popupMessage} />}
+      <p><a href="#about">About Flügelzange</a></p>
+    </footer>
   );
 }
 

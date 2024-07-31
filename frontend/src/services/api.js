@@ -56,11 +56,20 @@ export const createUser = async (user) => {
     email:user.email,
     password:hashPassword
   };
-
-
-
   const response = await axios.post(`${API_URL}/user`, usermithash);
     
   
   return response.data;
+};
+
+
+//User lOgin
+export const loginUser = async (username, password) => {
+  try {
+    const response = await axios.post(`${API_URL}/login`, { username, password });
+    return response.data;
+  } catch (error) {
+    console.error("Error logging in:", error);
+    throw error.response.data || 'Login failed';
+  }
 };

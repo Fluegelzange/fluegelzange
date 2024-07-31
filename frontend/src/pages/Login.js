@@ -1,16 +1,36 @@
-// src/components/Login.js
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './Login.css';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../App';
+import './Login.css'; // Importiere die CSS-Datei für das Login-Formular
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const { setIsAuthenticated, setPopupMessage } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Hier kannst du die Login-Logik implementieren
-    alert(`Username: ${username}, Password: ${password}`);
+
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        setIsAuthenticated(true);
+        setPopupMessage(`Willkommen zurück, ${username}!`);
+        navigate('/');
+      } else {
+        setPopupMessage('Benutzername oder Passwort ist falsch.');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+    }
   };
 
   return (
@@ -31,7 +51,6 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
-      <p>Don't have an account? <Link to="/signin">Sign In</Link></p>
     </div>
   );
 }
