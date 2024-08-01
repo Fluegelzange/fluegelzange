@@ -1,0 +1,27 @@
+/* src/pages/Article.css */
+
+.article-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .article-container h1 {
+    margin: 0 0 1rem;
+  }
+  
+  .article-container p {
+    line-height: 1.6;
+  }
+  
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
+  }
+  

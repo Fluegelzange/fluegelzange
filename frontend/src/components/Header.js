@@ -4,11 +4,12 @@ import { AuthContext } from '../App';
 import './Header.css';
 
 const Header = ({ handleSearch }) => {
-  const { isAuthenticated, setIsAuthenticated, setPopupMessage } = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated, setPopupMessage, userRole, setUserRole } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setUserRole('guest'); // Setze userRole auf 'guest' beim Ausloggen
     setPopupMessage('Erfolgreich ausgeloggt!');
     navigate('/');
   };
@@ -18,12 +19,21 @@ const Header = ({ handleSearch }) => {
       <div className="header-logo">
         <h1><Link to="/">Flügelzange</Link></h1>
       </div>
-      <div className="header-search">
-        <input
-          type="text"
-          placeholder="Search articles..."
-          onChange={(e) => handleSearch(e.target.value)}
-        />
+      <div className="header-content">
+        
+        <div className="header-search">
+          <input
+            type="text"
+            placeholder="Search articles..."
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+        </div>
+        {userRole === 'admin' && (
+        <div className="header-links">
+          <Link className="header-button" to="/addArticle">Artikel erstellen</Link>
+          
+        </div>
+        )}
       </div>
       <nav className="header-nav">
         <ul>

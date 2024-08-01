@@ -24,11 +24,21 @@ export const fetchNewestArticle = async () => {
 
 
 export const fetchArticleById = async (id) => {
-  const response = await axios.get(`${API_URL}/articles/${id}`);
-  console.log("ID_Articel", response.data);
-  const idArticle=response.data;
-  return idArticle;
+  try {
+    const response = await fetch(`http://localhost:5000/articles/${id}`);
+    if (!response.ok) {
+      throw new Error('Netzwerkantwort war nicht ok');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Fehler beim Abrufen des Artikels:', error);
+    throw error;
+  }
 };
+
+
+
 
 
 export const createArticle = async (article) => {

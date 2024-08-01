@@ -1,10 +1,11 @@
-// src/App.js
 import React, { createContext, useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import Popup from './components/Popup';
-import Home from './pages/Home'; // Import der Home-Komponente
+import AddArticle from './pages/AddArticle';
+import Article from './pages/Article'; // Importiere die Article-Komponente
+import Home from './pages/Home';
 import Login from './pages/Login';
 import SignIn from './pages/SignIn';
 
@@ -12,7 +13,7 @@ export const AuthContext = createContext();
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState(''); // Initialisiere userRole mit einem leeren String
+  const [userRole, setUserRole] = useState(''); 
   const [popupMessage, setPopupMessage] = useState('');
 
   useEffect(() => {
@@ -35,6 +36,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signin" element={<SignIn />} />
+              <Route path="/addArticle" element={<AddArticle />} />
+              <Route path="/:articleId" element={<Article />} /> {/* Route für Artikel-Detailseite */}
               <Route path="/confirm-email" element={<ConfirmEmail />} />
             </Routes>
           </main>
