@@ -28,9 +28,13 @@ const Header = ({ handleSearch }) => {
       <nav className="header-nav">
         <ul>
           {isAuthenticated ? (
-            <li><button onClick={handleLogout}>Logout</button></li>
+            <li>
+              <button className="header-button" onClick={handleLogout}>Logout</button>
+            </li>
           ) : (
-            <li><Link to="/login">Login</Link></li>
+            <li>
+              <Link className="header-button" to="/login">Login</Link>
+            </li>
           )}
         </ul>
       </nav>

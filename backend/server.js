@@ -169,7 +169,7 @@ app.post('/login', async (req, res) => {
     }
 
     // Wenn alles korrekt ist, Rückmeldung geben
-    res.status(200).json({ message: "Login erfolgreich", userId: user._id });
+    res.status(200).json({ message: "Login erfolgreich", userId: user._id, role: user.userrole });
   } catch (err) {
     console.error("Fehler beim Login:", err);
     res.status(500).send("Interner Serverfehler");
