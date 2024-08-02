@@ -169,13 +169,60 @@ app.post('/login', async (req, res) => {
     }
 
     // Wenn alles korrekt ist, Rückmeldung geben
-    res.status(200).json({ message: "Login erfolgreich", userId: user._id, role: user.userrole });
+    res.status(200).json({ message: "Login erfolgreich", userId: user._id, role: user.userrole, username: user.username });
   } catch (err) {
     console.error("Fehler beim Login:", err);
     res.status(500).send("Interner Serverfehler");
   }
 });
 
+
+//***************Kommentare*******************************
+app.post('/comments', async (req, res) => {
+  try {
+    const { articleId, userId, commentText, userName } = req.body;
+
+    if (!articleId || !userId || !commentText) {
+      return res.status(400).send("Invalid request: Missing required fields");
+    }
+
+    const newComment = {
+      articleId: articleId,
+      userId: userId,
+      username: userName,
+      commentText: commentText,
+      createdAt: new Date()
+    };
+
+    const result = await client.db("fluegelzange").collection("comments").insertOne(newComment);
+    res.status(201).json(newComment);
+  } catch (err) {
+    console.error("Error saving comment: ", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+
+// Kommentare zu einem Artikel abrufen
+app.get('/articles/:articleId/comments', async (req, res) => {
+  try {
+    const { articleId } = req.params;
+
+    if (!ObjectId.isValid(articleId)) {
+      return res.status(400).send("Invalid article ID");
+    }
+
+    const comments = await client.db("fluegelzange").collection("comments")
+      .find({ articleId: new ObjectId(articleId) }) // Beachte, dass articleId als ObjectId konvertiert wird
+      .toArray();
+
+    res.status(200).json(comments);
+  } catch (err) {
+    console.error("Error retrieving comments: ", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 
 

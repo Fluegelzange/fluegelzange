@@ -45,7 +45,7 @@ export const createArticle = async (article) => {
   const response = await axios.post(`${API_URL}/articles`, article);
   return response.data;
 };
-//Artikel Ende
+
 
 //User
 export const createUser = async (user) => {
@@ -81,5 +81,28 @@ export const loginUser = async (username, password) => {
   } catch (error) {
     console.error("Error logging in:", error);
     throw error.response.data || 'Login failed';
+  }
+};
+
+//Kommentare
+// Kommentare für einen Artikel abrufen
+export const fetchComments = async (articleId) => {
+  try {
+    const response = await axios.get(`${API_URL}/articles/${articleId}/comments`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    throw error;
+  }
+};
+
+// Kommentar erstellen
+export const createComment = async (comment) => {
+  try {
+    const response = await axios.post(`${API_URL}/comments`, comment);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    throw error;
   }
 };

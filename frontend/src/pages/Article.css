@@ -1,27 +1,97 @@
 /* src/pages/Article.css */
 
 .article-container {
-    padding: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .article-container h1 {
-    margin: 0 0 1rem;
-  }
-  
-  .article-container p {
-    line-height: 1.6;
-  }
-  
-  .back-link {
-    display: inline-block;
-    margin-bottom: 1rem;
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .back-link:hover {
-    text-decoration: underline;
-  }
-  
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.article-container h1 {
+  margin: 0 0 1rem;
+  color: #003366;
+}
+
+.article-container p {
+  line-height: 1.6;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: white;
+  background-color: #003366;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.back-link:hover {
+  background-color: #005bb5;
+  text-decoration: none;
+}
+
+.comment-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.comment-section h2 {
+  margin-bottom: 1rem;
+  color: #003366;
+}
+
+.comment-form {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.comment-form textarea {
+  flex: 1;
+  height: 50px;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  resize: none; /* Verhindert das manuelle Verändern der Größe */
+}
+
+.comment-form button {
+  padding: 0.5rem 1rem;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.comment-form button:hover {
+  background-color: #005bb5;
+}
+
+.comments-list {
+  margin-top: 1rem;
+}
+
+.comment {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.comment strong {
+  color: #003366;
+}
+
+.login-link {
+  color: #003366;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}

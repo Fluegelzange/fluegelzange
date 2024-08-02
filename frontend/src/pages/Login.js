@@ -1,4 +1,3 @@
-// src/pages/Login.js
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
@@ -7,7 +6,7 @@ import './Login.css';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { setIsAuthenticated, setUserRole, setPopupMessage } = useContext(AuthContext);
+  const { setIsAuthenticated, setUserRole, setPopupMessage, setUser, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,16 +22,22 @@ const Login = () => {
       });
 
       if (response.ok) {
-        const data = await response.json(); // Annahme: die Antwort enthält { token, role }
+        const data = await response.json();
+        console.log(data); // Annahme: die Antwort enthält { token, role, userId, username }
         setIsAuthenticated(true);
-        setUserRole(data.role); // Setzen der Benutzerrolle
+        setUserRole(data.role);
+        setUser({
+          userId: data.userId, // Benutzer-ID aus der Antwort
+          username: data.username // Benutzername aus der Antwort
+        });
+        console.log(user);
         setPopupMessage(`Willkommen zurück, ${username}!`);
         navigate('/');
       } else {
         alert('Benutzername oder Passwort ist falsch.');
       }
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.error('Fehler beim Login:', error);
     }
   };
 

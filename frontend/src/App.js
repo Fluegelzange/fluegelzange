@@ -13,7 +13,8 @@ export const AuthContext = createContext();
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState(''); 
+  const [userRole, setUserRole] = useState('');
+  const [user, setUser] = useState('');
   const [popupMessage, setPopupMessage] = useState('');
 
   useEffect(() => {
@@ -27,7 +28,7 @@ function App() {
   }, [popupMessage]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userRole, setUserRole, setPopupMessage }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userRole, setUserRole, user, setUser, setPopupMessage }}>
       <Router>
         <div className="App">
           <Header />
@@ -37,7 +38,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/addArticle" element={<AddArticle />} />
-              <Route path="/:articleId" element={<Article />} /> {/* Route für Artikel-Detailseite */}
+              <Route path="/:articleId" element={<Article />} />
               <Route path="/confirm-email" element={<ConfirmEmail />} />
             </Routes>
           </main>
