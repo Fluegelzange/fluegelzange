@@ -32,7 +32,7 @@ const Home = () => {
     <div className="home-container">
       {latestArticle ? (
         <div className="latest-article">
-          <Link to={`/${latestArticle._id}`} className="latest-article-link">
+          <Link to={`/article/${latestArticle._id}`} className="latest-article-link">
             <h2>{latestArticle.header}</h2>
             <p>{latestArticle.value.split('\n').slice(0, 3).join('\n')}...</p> {/* Zeige nur die ersten 3 Zeilen */}
             <span className="read-more">Read more</span>
@@ -45,7 +45,7 @@ const Home = () => {
       <div className="article-thumbnails">
         {nextThreeArticles.length > 0 ? (
           nextThreeArticles.map(article => (
-            <Link key={article._id} to={`/${article._id}`} className="article-thumbnail">
+            <Link key={article._id} to={`/article/${article._id}`} className="article-thumbnail">
               <h3>{article.header}</h3>
             </Link>
           ))

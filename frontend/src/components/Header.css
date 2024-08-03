@@ -90,3 +90,52 @@ h1 a {
   color: inherit;
   text-decoration: none;
 }
+
+
+.header-search {
+  position: relative;
+  flex: 1;
+}
+
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 40%; /* Breite auf 100% des Containers setzen */
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000; /* Stelle sicher, dass das Vorschlagsfeld über anderen Elementen angezeigt wird */
+  border-radius: 4px; /* Ecken abrunden */
+  margin-top: 2px; /* Kleiner Abstand zum Suchfeld */
+}
+
+.search-suggestions ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-suggestions li {
+  padding: 0; /* Padding vom Listenelement entfernen */
+}
+
+.search-suggestion-link {
+  display: block; /* Link als Blockelement anzeigen, damit die ganze Zeile klickbar ist */
+  padding: 8px; /* Padding für Link hinzufügen */
+  color: #333;
+  text-decoration: none;
+}
+
+.search-suggestion-link:hover {
+  background-color: #f0f0f0; /* Hover-Effekt für den Link */
+}
+
+.search-suggestions p {
+  padding: 8px;
+  margin: 0;
+  text-align: left;
+  color: #999; /* Farbe für den 'Keine Ergebnisse gefunden'-Text */
+}
