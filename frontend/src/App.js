@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-route
 import './App.css';
 import Header from './components/Header';
 import Popup from './components/Popup';
+import About from './pages/About';
 import AddArticle from './pages/AddArticle';
 import Article from './pages/Article'; // Importiere die Article-Komponente
 import Home from './pages/Home';
@@ -40,6 +41,7 @@ function App() {
               <Route path="/addArticle" element={<AddArticle />} />
               <Route path="/article/:articleId" element={<Article />} />
               <Route path="/confirm-email" element={<ConfirmEmail />} />
+              <Route path="/about" element={<About />} />
             </Routes>
           </main>
           <Footer />

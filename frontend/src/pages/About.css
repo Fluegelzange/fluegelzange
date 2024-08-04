@@ -1,0 +1,27 @@
+/* About.css */
+
+.about {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .about h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+  
+  .about p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  
+  .about a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .about a:hover {
+    text-decoration: underline;
+  }
+  
