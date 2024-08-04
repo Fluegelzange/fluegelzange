@@ -1,11 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-const EmailService = require('./services/emailService'); // Importiere den EmailService
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const cloudinary = require('cloudinary').v2; // Cloudinary einbinden
 const uri = "mongodb+srv://user1:user@cluster0.bge3kpm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const app = express();
 const port = process.env.PORT || 5000;
+
+// Cloudinary Konfiguration
+cloudinary.config({
+  cloud_name: 'dsw1adgtk', // Ersetze durch deinen Cloud-Namen
+  api_key: 'QZO23z9UR0CBDTlRe6dgsWCbdQo', // Ersetze durch deinen API-Schlüssel
+  api_secret: 'QZO23z9UR0CBDTlRe6dgsWCbdQo' // Ersetze durch dein API-Geheimnis
+});
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -32,9 +39,23 @@ run().catch(console.dir);
 app.use(cors());
 app.use(express.json());
 
+// Route für das Hochladen von Thumbnails
+app.post('/upload-thumbnail', async (req, res) => {
+  try {
+    const { filePath } = req.body;
 
+    // Hochladen zur Cloudinary
+    const result = await cloudinary.uploader.upload(filePath);
+    const thumbnailUrl = result.secure_url; // URL des hochgeladenen Thumbnails
 
-//++++++++++++++++++++Articles++++++++++++++++++++++
+    res.status(201).json({ thumbnailUrl });
+  } catch (err) {
+    console.error("Error uploading thumbnail: ", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// ++++++++++++++++++++Articles++++++++++++++++++++++
 app.get('/articles', async (req, res) => {
   try {
     const articles = await client.db("fluegelzange").collection("articles").find().toArray();
@@ -65,7 +86,8 @@ app.post('/articles', async (req, res) => {
     const newArticle = {
       _id: new ObjectId(),
       header: req.body.header,
-      value: req.body.value
+      value: req.body.value,
+      thumbnailUrl: req.body.thumbnailUrl // Thumbnail-URL speichern
     };
     const result = await client.db("fluegelzange").collection("articles").insertOne(newArticle);
     res.status(201).json(newArticle);
@@ -75,9 +97,7 @@ app.post('/articles', async (req, res) => {
   }
 });
 
-
-
-//++++++++++++++++++++++++++++++User++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++User++++++++++++++++++++++
 app.post('/user', async (req, res) => {
   try {
     const newUser = {
@@ -103,8 +123,7 @@ app.post('/user', async (req, res) => {
   }
 });
 
-
-//Verifizierung+Redirect
+// Verifizierung+Redirect
 app.get('/confirm-email', async (req, res) => {
   try {
     const token = req.query.token;
@@ -148,7 +167,7 @@ app.get('/confirm-email', async (req, res) => {
   }
 });
 
-//++++++++++USER++LOGIN++++++++++++++++++++++++
+// ++++++++++USER++LOGIN++++++++++++++++++++++++
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -176,8 +195,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-//***************Kommentare*******************************
+// ***************Kommentare*******************************
 app.post('/comments', async (req, res) => {
   try {
     const { articleId, userId, commentText, userName } = req.body;
@@ -202,8 +220,6 @@ app.post('/comments', async (req, res) => {
   }
 });
 
-
-
 // Kommentare zu einem Artikel abrufen
 app.get('/articles/:articleId/comments', async (req, res) => {
   try {
@@ -223,8 +239,6 @@ app.get('/articles/:articleId/comments', async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
-
 
 app.listen(port, () => {
   console.log(`Server läuft auf http://localhost:${port}`);

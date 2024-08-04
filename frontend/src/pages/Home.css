@@ -11,11 +11,22 @@
   width: 100%;
   max-width: 1200px;
   margin-bottom: 2rem;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative; /* Relative Positionierung für den Bild-Container */
+  overflow: hidden; /* Verhindert, dass Bild über Container hinausgeht */
+}
+
+.latest-article img.thumbnail-image {
+  width: 100%;
+  height: 35vh; /* Höhe auf 16% der Bildschirmhöhe setzen */
+  object-fit: cover; /* Bild zuschneiden und in Container passen */
+  object-position: 80% 20%; /* Bildpositionierung: 80% unten, 20% oben */
+  border-radius: 12px;
+  margin-bottom: 1rem; /* Abstand zwischen Bild und Text */
 }
 
 .latest-article-link {
@@ -42,27 +53,46 @@
 
 .article-thumbnails {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Reduzierte minimale Kachelgröße */
+  gap: 2rem; /* Erhöhter Abstand zwischen den Kacheln */
   max-width: 1200px;
   width: 100%;
 }
 
 .article-thumbnail {
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 0.5rem; /* Reduzierter Innenabstand */
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  aspect-ratio: 1; /* Stellt sicher, dass die Kacheln quadratisch sind */
+  position: relative;
+  overflow: hidden; /* Verhindert, dass Bild über Container hinausgeht */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.article-thumbnail img.thumbnail-image {
+  width: 100%;
+  height: 120px; /* Reduzierte Höhe des Bildes */
+  object-fit: cover; /* Bild zuschneiden und in Container passen */
+  object-position: 80% 20%; /* Bildpositionierung: 80% unten, 20% oben */
+  border-radius: 8px;
+  margin-bottom: 0.5rem; /* Abstand zwischen Bild und Titel */
+}
+
+.article-thumbnail:hover {
+  transform: translateY(-5px); /* Hebt die Kachel bei Hover an */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .article-thumbnail h3 {
   margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #003366;
 }

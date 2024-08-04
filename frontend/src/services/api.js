@@ -47,6 +47,27 @@ export const createArticle = async (article) => {
 };
 
 
+export const uploadThumbnail = async (formData) => {
+  try {
+    const response = await fetch('https://api.cloudinary.com/v1_1/dsw1adgtk/image/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Cloudinary Response:', data); // Protokolliere die Cloudinary-Antwort
+    return { thumbnailUrl: data.secure_url };
+  } catch (error) {
+    console.error('Error uploading thumbnail:', error);
+    throw error;
+  }
+};
+
+
 //User
 export const createUser = async (user) => {
 

@@ -85,6 +85,9 @@ const Article = () => {
     <div className="article-container">
       <Link to="/" className="back-link">Zurück zur Startseite</Link>
       <h1>{article.header}</h1>
+      {article.thumbnailUrl && (
+        <img src={article.thumbnailUrl} alt="Artikel Thumbnail" className="article-thumbnail" />
+      )}
       <p>{article.value}</p>
 
       <div className="comment-section">

@@ -92,7 +92,7 @@ function Footer() {
   return (
     <footer>
       {popupMessage && <Popup message={popupMessage} />}
-      <p><a href="#about">About Flügelzange</a></p>
+      <p><a href="/about">About Flügelzange</a></p>
     </footer>
   );
 }
