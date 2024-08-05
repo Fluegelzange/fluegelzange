@@ -1,3 +1,4 @@
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
@@ -6,7 +7,7 @@ import './Login.css';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { setIsAuthenticated, setUserRole, setPopupMessage, setUser, user } = useContext(AuthContext);
+  const { setIsAuthenticated, setUserRole, setPopupMessage, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,14 +24,13 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data); // Annahme: die Antwort enthält { token, role, userId, username }
+        console.log(data);
         setIsAuthenticated(true);
         setUserRole(data.role);
         setUser({
-          userId: data.userId, // Benutzer-ID aus der Antwort
-          username: data.username // Benutzername aus der Antwort
+          userId: data.userId,
+          username: data.username
         });
-        console.log(user);
         setPopupMessage(`Willkommen zurück, ${username}!`);
         navigate('/');
       } else {
@@ -38,6 +38,36 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Fehler beim Login:', error);
+    }
+  };
+
+  const handleGoogleLoginSuccess = async (response) => {
+    try {
+      const res = await fetch('http://localhost:5000/google-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: response.credential }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
+        setIsAuthenticated(true);
+        setUserRole(data.role);
+        setUser({
+          userId: data.userId,
+          username: data.username
+        });
+        setPopupMessage(`Willkommen zurück, ${data.username}!`);
+        navigate('/');
+      } else {
+        const errorData = await res.json();
+        alert(errorData.message || 'Ein Fehler ist aufgetreten.');
+      }
+    } catch (error) {
+      console.error('Fehler bei Google Login:', error);
     }
   };
 
@@ -59,6 +89,17 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
+      <div className="google-login-container">
+        <GoogleOAuthProvider clientId="279923794458-53jtgbc8bf481v5d2gqro4do00thm28k.apps.googleusercontent.com">
+          <GoogleLogin
+            onSuccess={handleGoogleLoginSuccess}
+            onError={(error) => console.error('Fehler bei Google Login:', error)}
+          />
+        </GoogleOAuthProvider>
+      </div>
+      <div className="sign-in-link-container">
+        <p>Kein Konto? <a href="/SignIn">Jetzt registrieren</a></p>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -101,28 +102,131 @@ app.post('/articles', async (req, res) => {
 // ++++++++++++++++++++++++++++++User++++++++++++++++++++++
 app.post('/user', async (req, res) => {
   try {
+    const { username, email, password } = req.body;
+
+    // Überprüfen, ob der Benutzername bereits existiert
+    const existingUserByUsername = await client.db("fluegelzange").collection("user").findOne({ username });
+    if (existingUserByUsername) {
+      return res.status(400).json({ success: false, message: 'Username already taken' });
+    }
+
+    // Überprüfen, ob die E-Mail bereits existiert
+    const existingUserByEmail = await client.db("fluegelzange").collection("user").findOne({ usermail: email });
+    if (existingUserByEmail) {
+      return res.status(400).json({ success: false, message: 'Email already registered' });
+    }
+
+    // Passwortvalidierung
+    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long and contain both letters and numbers.' });
+    }
+
     const newUser = {
       _id: new ObjectId(),
-      username: req.body.username,
+      username,
       userrole: "user",
-      usermail: req.body.email,
-      passwort: req.body.password,
+      usermail: email,
+      passwort: password,
       verifziert: false
     };
 
-    const result = await client.db("fluegelzange").collection("user").insertOne(newUser);
-    res.status(201).json(newUser);
+    await client.db("fluegelzange").collection("user").insertOne(newUser);
+    res.status(201).json({ success: true, message: 'User successfully created!' });
 
     const token = newUser._id.toString();
 
     // Bestätigungs-E-Mail senden
-    //await EmailService.sendConfirmationEmail(newUser.usermail, newUser.username, token);
+    // await EmailService.sendConfirmationEmail(newUser.usermail, newUser.username, token);
 
   } catch (err) {
     console.error("Error creating new user: ", err);
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+
+
+//##################Google############
+
+
+
+async function findUserByEmail(email) {
+  try {
+    const db = client.db('fluegelzange');
+    const user = await db.collection('user').findOne({ usermail: email });
+
+    return user;
+  } catch (err) {
+    console.error('Fehler beim Finden des Benutzers:', err);
+    throw new Error('Fehler beim Finden des Benutzers');
+  }
+}
+
+app.post('/google-login', async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    // Überprüfe das Token bei Google
+    const response = await axios.get(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`);
+    const data = response.data;
+
+    if (data.error) {
+      return res.status(401).json({ message: 'Ungültiges Token' });
+    }
+
+    const { email, name } = data;
+
+    // Prüfe, ob der Benutzer bereits existiert
+    let user = await findUserByEmail(email);
+
+    if (!user) {
+      // Benutzer existiert nicht, erstelle einen neuen
+      user = await createUser({ username: name, email, password: 'temporarypassword' }); // Setze ein temporäres Passwort
+
+      if (user.error) {
+        return res.status(400).json({ message: user.error });
+      }
+    }
+
+    // Führe die Anmeldung durch und gib die Benutzerdaten zurück
+    const userRole = 'user'; // Beispielrolle, hier anpassen
+    res.json({
+      userId: user._id.toString(),
+      username: user.username,
+      role: userRole,
+    });
+  } catch (error) {
+    console.error('Fehler beim Google Login:', error);
+    res.status(500).json({ message: 'Interner Serverfehler' });
+  }
+});
+
+async function createUser(userData) {
+  try {
+    const db = client.db('fluegelzange');
+    
+    const newUser = {
+      _id: new ObjectId(),
+      username: userData.username,
+      userrole: 'user',
+      usermail: userData.email,
+      passwort: userData.password,
+      mitgoogle: true, // In der realen Anwendung, pass auf, dass das Passwort gehasht wird
+      verifziert: false
+    };
+
+    const result = await db.collection('user').insertOne(newUser);
+    return newUser;
+  } catch (err) {
+    console.error("Fehler beim Erstellen des neuen Benutzers: ", err);
+    throw new Error('Fehler beim Erstellen des neuen Benutzers');
+  }
+}
+
+
+//#######################################################################
+
 
 // Verifizierung+Redirect
 app.get('/confirm-email', async (req, res) => {

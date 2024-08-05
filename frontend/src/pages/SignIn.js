@@ -1,38 +1,44 @@
-// src/pages/SignIn.js
 import React, { useState } from 'react';
 import { createUser } from '../services/api';
 import './SignIn.css';
-
 
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [feedback, setFeedback] = useState('');
+
+  const validatePassword = (password) => {
+    return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const newUser = { username, email, password };
-    const result = await createUser(newUser);
-    console.log('User erfolgreich hinzugefügt!');
-    alert(result);
 
-    // Hier kannst du die Sign-In-Logik implementieren
+    if (!validatePassword(password)) {
+      setFeedback("Passwort muss mindestens 8 Zeichen lang sein und sowohl Zahlen als auch Buchstaben enthalten.");
+      return;
+    }
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-    } else {
-      console.log(`Username: ${username}, Email: ${email}, Password: ${password}`);
+      setFeedback("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const newUser = { username, email, password };
+      const result = await createUser(newUser);
+      if (result.success) {
+        setFeedback("User successfully created!");
+      } else {
+        setFeedback(result.message); // Feedback from server (e.g., username or email already exists)
+      }
+    } catch (error) {
+      console.error("Error creating user: ", error);
+      setFeedback("Nutzername oder Mailadresse schon registriert.");
     }
   };
-
-
-
-   
-    
-    
-   
-  
 
   return (
     <div className="signin-container">
@@ -63,6 +69,7 @@ const SignIn = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <button type="submit">Sign In</button>
+        {feedback && <p className="feedback">{feedback}</p>}
       </form>
     </div>
   );
