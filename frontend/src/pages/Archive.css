@@ -1,0 +1,77 @@
+.archive-container {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .archive-container h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .filter-options {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+  
+  .filter-options label {
+    font-size: 1em;
+    color: #333;
+  }
+  
+  .filter-options select {
+    padding: 5px;
+    font-size: 1em;
+  }
+  
+  .archive-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .archive-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
+  
+  .archive-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+  }
+  
+  .archive-details {
+    flex: 1;
+  }
+  
+  .archive-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .archive-link:hover .archive-thumbnail {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  
+  .archive-details h2 {
+    font-size: 1.2em;
+    margin: 0;
+  }
+  
+  .archive-date {
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 5px;
+  }
+  

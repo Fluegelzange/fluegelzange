@@ -87,7 +87,8 @@ app.post('/articles', async (req, res) => {
       _id: new ObjectId(),
       header: req.body.header,
       value: req.body.value,
-      thumbnailUrl: req.body.thumbnailUrl // Thumbnail-URL speichern
+      thumbnailUrl: req.body.thumbnailUrl,
+      date: req.body.date
     };
     const result = await client.db("fluegelzange").collection("articles").insertOne(newArticle);
     res.status(201).json(newArticle);

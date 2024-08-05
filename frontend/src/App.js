@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Popup from './components/Popup';
 import About from './pages/About';
 import AddArticle from './pages/AddArticle';
+import Archive from './pages/Archive';
 import Article from './pages/Article'; // Importiere die Article-Komponente
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -42,6 +43,7 @@ function App() {
               <Route path="/article/:articleId" element={<Article />} />
               <Route path="/confirm-email" element={<ConfirmEmail />} />
               <Route path="/about" element={<About />} />
+              <Route path="/archive" element={<Archive/>}/>
             </Routes>
           </main>
           <Footer />

@@ -9,7 +9,7 @@ const AddArticle = () => {
   const [thumbnailFile, setThumbnailFile] = useState(null); // Zustand für die hochgeladene Datei
   const [articleId, setArticleId] = useState('');
   const { userRole, setPopupMessage } = useContext(AuthContext);
-  const [ setSingleArticle] = useState(null);
+  const [setSingleArticle] = useState(null);
 
   useEffect(() => {
     const getArticles = async () => {
@@ -22,7 +22,7 @@ const AddArticle = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       let thumbnailUrl = '';
       if (thumbnailFile) {
@@ -30,14 +30,15 @@ const AddArticle = () => {
         const formData = new FormData();
         formData.append('file', thumbnailFile);
         formData.append('upload_preset', 'test_preset'); // Ersetze durch deinen Upload-Preset
-  
+
         const response = await uploadThumbnail(formData);
         thumbnailUrl = response.thumbnailUrl;
       }
-  
+
       console.log('Thumbnail URL:', thumbnailUrl); // Protokolliere die Thumbnail-URL
-  
-      const newArticle = { header, value, thumbnailUrl };
+
+      const date = new Date(); // Aktuelles Datum und Uhrzeit
+      const newArticle = { header, value, thumbnailUrl, date }; // Datum hinzufügen
       const result = await createArticle(newArticle);
       setArticles([...articles, result]);
       setHeader('');

@@ -96,6 +96,9 @@ const Header = () => {
       </div>
       <nav className="header-nav">
         <ul>
+          <li>
+            <Link className="header-button" to="/archive">Archiv</Link> {/* Link zum Archiv */}
+          </li>
           {isAuthenticated ? (
             <li>
               <button className="header-button" onClick={handleLogout}>Logout</button>
