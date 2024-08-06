@@ -38,7 +38,7 @@ async function run() {
 run().catch(console.dir);
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL // z.B. `https://deine-domain.com`
+  origin: '*'//process.env.FRONTEND_URL // z.B. `https://deine-domain.com`
 }));
 app.use(express.json());
 
