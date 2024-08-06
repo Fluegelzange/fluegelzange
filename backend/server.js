@@ -38,9 +38,13 @@ async function run() {
 run().catch(console.dir);
 
 app.use(cors({
-  origin: '*'//process.env.FRONTEND_URL // z.B. `https://deine-domain.com`
+  origin: '*', // Erlaube alle Ursprünge zum Testen, sollte in der Produktion spezifisch sein
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Erlaube bestimmte HTTP-Methoden
+  allowedHeaders: ['Content-Type', 'Authorization'] // Erlaube bestimmte Header
 }));
-app.use(express.json());
+
+
+//app.use(express.json());
 
 // Route für das Hochladen von Thumbnails
 app.post('/upload-thumbnail', async (req, res) => {
