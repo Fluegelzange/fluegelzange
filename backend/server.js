@@ -38,7 +38,7 @@ async function run() {
 run().catch(console.dir);
 
 app.use(cors({
-  origin: 'https://www.fluegel-zange.de', // Erlaube nur diese Domain
+  origin: 'https://fluegel-zange.de', // Erlaube nur diese Domain
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Erlaube spezifische HTTP-Methoden
   allowedHeaders: ['Content-Type', 'Authorization'] // Erlaube spezifische Header
 }));
