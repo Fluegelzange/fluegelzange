@@ -38,13 +38,12 @@ async function run() {
 run().catch(console.dir);
 
 app.use(cors({
-  origin: '*', // Erlaube alle Ursprünge zum Testen, sollte in der Produktion spezifisch sein
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Erlaube bestimmte HTTP-Methoden
-  allowedHeaders: ['Content-Type', 'Authorization'] // Erlaube bestimmte Header
+  origin: 'https://www.fluegel-zange.de', // Erlaube nur diese Domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Erlaube spezifische HTTP-Methoden
+  allowedHeaders: ['Content-Type', 'Authorization'] // Erlaube spezifische Header
 }));
 
-
-//app.use(express.json());
+app.use(express.json());
 
 // Route für das Hochladen von Thumbnails
 app.post('/upload-thumbnail', async (req, res) => {
