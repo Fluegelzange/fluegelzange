@@ -7,7 +7,7 @@ const cloudinary = require('cloudinary').v2; // Cloudinary einbinden
 require('dotenv').config(); // dotenv einbinden
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 
 // Cloudinary Konfiguration
 cloudinary.config({
@@ -38,7 +38,9 @@ async function run() {
 }
 run().catch(console.dir);
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL // z.B. `https://deine-domain.com`
+}));
 app.use(express.json());
 
 // Route für das Hochladen von Thumbnails
@@ -364,5 +366,5 @@ app.get('/articles/:articleId/comments', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server läuft auf http://localhost:${port}`);
+  console.log(`Server läuft auf ${process.env.SERVER_URL}:${port}`);
 });
