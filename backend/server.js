@@ -7,7 +7,6 @@ const cloudinary = require('cloudinary').v2; // Cloudinary einbinden
 require('dotenv').config(); // dotenv einbinden
 
 const app = express();
-const port = process.env.PORT;
 
 // Cloudinary Konfiguration
 cloudinary.config({
@@ -365,6 +364,6 @@ app.get('/articles/:articleId/comments', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server läuft auf ${process.env.SERVER_URL}:${port}`);
+app.listen( () => {
+  console.log(`Server läuft auf ${process.env.SERVER_URL}`);
 });
