@@ -1,13 +1,18 @@
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
 
-const API_URL = 'http://localhost:5000';
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+const CLOUD_URL = process.env.REACT_APP_CLOUD_URL;
+
+if (!backendUrl || !CLOUD_URL) {
+  console.error("Umgebungsvariablen sind nicht korrekt definiert.");
+}
 
 
 
 //Artikel
 export const fetchArticles = async () => {
-  const response = await axios.get(`${API_URL}/articles`);
+  const response = await axios.get(`${backendUrl}/articles`);
   console.log("Articel", response.data)
   console.log(response.data[response.data.length-1]);
   return response.data;
@@ -15,7 +20,7 @@ export const fetchArticles = async () => {
 
 
 export const fetchNewestArticle = async () => {
-  const response = await axios.get(`${API_URL}/articles`);
+  const response = await axios.get(`${backendUrl}/articles`);
   console.log("Articel", response.data);
   console.log(response.data[response.data.length-1]);
   const newArticle=response.data[response.data.length-1]
@@ -25,7 +30,7 @@ export const fetchNewestArticle = async () => {
 
 export const fetchArticleById = async (id) => {
   try {
-    const response = await fetch(`http://localhost:5000/articles/${id}`);
+    const response = await fetch(`${backendUrl}/articles/${id}`);
     if (!response.ok) {
       throw new Error('Netzwerkantwort war nicht ok');
     }
@@ -42,14 +47,14 @@ export const fetchArticleById = async (id) => {
 
 
 export const createArticle = async (article) => {
-  const response = await axios.post(`${API_URL}/articles`, article);
+  const response = await axios.post(`${backendUrl}/articles`, article);
   return response.data;
 };
 
 
 export const uploadThumbnail = async (formData) => {
   try {
-    const response = await fetch('https://api.cloudinary.com/v1_1/dsw1adgtk/image/upload', {
+    const response = await fetch(CLOUD_URL, {
       method: 'POST',
       body: formData
     });
@@ -87,7 +92,7 @@ export const createUser = async (user) => {
     email:user.email,
     password:hashPassword
   };
-  const response = await axios.post(`${API_URL}/user`, usermithash);
+  const response = await axios.post(`${backendUrl}/user`, usermithash);
     
   
   return response.data;
@@ -97,7 +102,7 @@ export const createUser = async (user) => {
 //User lOgin
 export const loginUser = async (username, password) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, { username, password });
+    const response = await axios.post(`${backendUrl}/login`, { username, password });
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
@@ -109,7 +114,7 @@ export const loginUser = async (username, password) => {
 // Kommentare für einen Artikel abrufen
 export const fetchComments = async (articleId) => {
   try {
-    const response = await axios.get(`${API_URL}/articles/${articleId}/comments`);
+    const response = await axios.get(`${backendUrl}/articles/${articleId}/comments`);
     return response.data;
   } catch (error) {
     console.error('Error fetching comments:', error);
@@ -117,10 +122,22 @@ export const fetchComments = async (articleId) => {
   }
 };
 
+//Kommentar löschen
+export const deleteComment = async (commentId) =>{
+  try {
+    const response = await axios.delete(`${backendUrl}/comments/${commentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting comments:', error);
+    throw error;
+  }
+}
+
+
 // Kommentar erstellen
 export const createComment = async (comment) => {
   try {
-    const response = await axios.post(`${API_URL}/comments`, comment);
+    const response = await axios.post(`${backendUrl}/comments`, comment);
     return response.data;
   } catch (error) {
     console.error('Error creating comment:', error);

@@ -37,13 +37,11 @@
 
 .header-search {
   flex: 1;
-  
-   /* Nimmt den verfügbaren Platz zwischen Links und Navigation ein */
+  position: relative;
 }
 
 .header-search input {
-  
-  width: 30%; /* Nimmt den gesamten verfügbaren Platz innerhalb der Suchleiste ein */
+  width: 30%;
   padding: 0.5rem;
   font-size: 1rem;
   border: none;
@@ -58,6 +56,7 @@
 .header-nav ul {
   list-style: none;
   display: flex;
+  align-items: center; /* Neu: Buttons vertikal zentrieren */
   margin: 0;
   padding: 0;
 }
@@ -76,6 +75,9 @@
   font-size: 1rem;
   border-radius: 4px;
   transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center; /* Neu: Text innerhalb des Buttons zentrieren */
+  justify-content: center; /* Neu: Text innerhalb des Buttons zentrieren */
 }
 
 .header-button:hover {
@@ -91,12 +93,6 @@ h1 a {
   text-decoration: none;
 }
 
-
-.header-search {
-  position: relative;
-  flex: 1;
-}
-
 .search-suggestions {
   position: absolute;
   top: 100%;
@@ -104,12 +100,12 @@ h1 a {
   background: white;
   border: 1px solid #ddd;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  width: 40%; /* Breite auf 100% des Containers setzen */
+  width: 40%;
   max-height: 200px;
   overflow-y: auto;
-  z-index: 1000; /* Stelle sicher, dass das Vorschlagsfeld über anderen Elementen angezeigt wird */
-  border-radius: 4px; /* Ecken abrunden */
-  margin-top: 2px; /* Kleiner Abstand zum Suchfeld */
+  z-index: 1000;
+  border-radius: 4px;
+  margin-top: 2px;
 }
 
 .search-suggestions ul {
@@ -119,23 +115,23 @@ h1 a {
 }
 
 .search-suggestions li {
-  padding: 0; /* Padding vom Listenelement entfernen */
+  padding: 0;
 }
 
 .search-suggestion-link {
-  display: block; /* Link als Blockelement anzeigen, damit die ganze Zeile klickbar ist */
-  padding: 8px; /* Padding für Link hinzufügen */
+  display: block;
+  padding: 8px;
   color: #333;
   text-decoration: none;
 }
 
 .search-suggestion-link:hover {
-  background-color: #f0f0f0; /* Hover-Effekt für den Link */
+  background-color: #f0f0f0;
 }
 
 .search-suggestions p {
   padding: 8px;
   margin: 0;
   text-align: left;
-  color: #999; /* Farbe für den 'Keine Ergebnisse gefunden'-Text */
+  color: #999;
 }

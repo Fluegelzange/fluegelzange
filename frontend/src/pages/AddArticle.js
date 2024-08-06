@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../App';
 import { createArticle, fetchArticleById, fetchArticles, uploadThumbnail } from '../services/api'; // uploadThumbnail Funktion importieren
+import './AddArticle.css'; // CSS-Datei importieren
 
 const AddArticle = () => {
   const [articles, setArticles] = useState([]);
@@ -73,12 +74,12 @@ const AddArticle = () => {
           <form onSubmit={handleSubmit} className="article-form">
             <input
               type="text"
-              placeholder="Header"
+              placeholder="Überschrift"
               value={header}
               onChange={(e) => setHeader(e.target.value)}
             />
             <textarea
-              placeholder="Value"
+              placeholder="Artikel"
               value={value}
               onChange={(e) => setValue(e.target.value)}
             ></textarea>
@@ -90,15 +91,7 @@ const AddArticle = () => {
             <button type="submit">Artikel erstellen</button>
           </form>
 
-          <form onSubmit={handleFetchById} className="article-form">
-            <input
-              type="text"
-              placeholder="Article ID"
-              value={articleId}
-              onChange={(e) => setArticleId(e.target.value)}
-            />
-            <button type="submit">Artikel abrufen</button>
-          </form>
+         
         </>
       )}
     </>

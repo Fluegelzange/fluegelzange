@@ -1,5 +1,3 @@
-/* src/pages/Article.css */
-
 .article-container {
   padding: 2rem;
   max-width: 800px;
@@ -18,11 +16,11 @@
 .article-thumbnail {
   display: block;
   width: 100%;
-  max-height: 400px; /* Begrenzung der Bildhöhe */
-  object-fit: cover; /* Bild proportional zuschneiden, um Container zu füllen */
-  margin-bottom: 1rem; /* Abstand unter dem Bild */
-  border-radius: 8px; /* Abgerundete Ecken für das Bild */
-  border: 1px solid #ddd; /* Leichter Rahmen um das Bild */
+  max-height: 400px;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
 }
 
 .back-link {
@@ -68,7 +66,7 @@
   border: 1px solid #ccc;
   font-size: 1rem;
   margin-right: 0.5rem;
-  resize: none; /* Verhindert das manuelle Verändern der Größe */
+  resize: none;
 }
 
 .comment-form button {
@@ -92,10 +90,16 @@
 .comment {
   padding: 0.5rem 0;
   border-bottom: 1px solid #ccc;
+  position: relative; /* Position für absolute Positionierung der Delete-Button */
 }
 
 .comment strong {
   color: #003366;
+}
+
+/* Stil für Benutzernamen des Admins */
+.comment .admin-username {
+  color: purple; /* Lila Farbe für Admin-Benutzernamen */
 }
 
 .login-link {
@@ -104,4 +108,22 @@
 
 .login-link:hover {
   text-decoration: underline;
+}
+
+/* Stil für die Löschschaltfläche */
+.delete-button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.delete-button:hover {
+  color: darkred;
 }

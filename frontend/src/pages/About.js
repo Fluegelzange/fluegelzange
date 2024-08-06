@@ -15,7 +15,7 @@ function About() {
         Wir verdienen mit Flügelzange kein Geld und unser Engagement basiert rein auf der Freude am Fußball und dem Austausch mit unserer Leserschaft. Wenn du uns unterstützen möchtest, kannst du dies gerne mit einer kleinen Spende tun. 
       </p>
       <p>
-        <a href="https://www.paypal.com/paypalme/fluegelzange.spende" target="_blank" rel="noopener noreferrer">Spende an Flügelzange</a>
+        <a href="https://www.paypal.com/paypalme" target="_blank" rel="noopener noreferrer">Spende an Flügelzange</a>
       </p>
       <p>
         Vielen Dank für dein Interesse und deine Unterstützung!

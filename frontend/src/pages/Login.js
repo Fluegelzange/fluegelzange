@@ -9,12 +9,14 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const { setIsAuthenticated, setUserRole, setPopupMessage, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL; // Backend-URL als Umgebungsvariable
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      const response = await fetch(`${backendUrl}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +45,7 @@ const Login = () => {
 
   const handleGoogleLoginSuccess = async (response) => {
     try {
-      const res = await fetch('http://localhost:5000/google-login', {
+      const res = await fetch(`${backendUrl}/google-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +92,7 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       <div className="google-login-container">
-        <GoogleOAuthProvider clientId="279923794458-53jtgbc8bf481v5d2gqro4do00thm28k.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId={googleClientId}>
           <GoogleLogin
             onSuccess={handleGoogleLoginSuccess}
             onError={(error) => console.error('Fehler bei Google Login:', error)}

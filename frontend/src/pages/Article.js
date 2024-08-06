@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../App';
-import { createComment, fetchArticleById, fetchComments } from '../services/api';
+import { createComment, deleteComment, fetchArticleById, fetchComments } from '../services/api';
 import './Article.css';
 
 const Article = () => {
@@ -11,7 +11,7 @@ const Article = () => {
   const [comment, setComment] = useState('');
   const [error, setError] = useState(null);
   const [noCommentsMessage, setNoCommentsMessage] = useState(false);
-  const { isAuthenticated, user } = useContext(AuthContext);
+  const { isAuthenticated, user, userRole, setPopupMessage } = useContext(AuthContext);
 
   useEffect(() => {
     const getArticleAndComments = async () => {
@@ -58,18 +58,31 @@ const Article = () => {
     try {
       const newComment = {
         articleId,
-        userId: user.userId, // Benutzer-ID aus dem Auth-Kontext
-        username: user.username, // Benutzername aus dem Auth-Kontext
+        userId: user.userId,
+        username: user.username,
         commentText: comment
       };
 
       const createdComment = await createComment(newComment);
       setComments([...comments, createdComment]);
       setComment('');
-      setNoCommentsMessage(false); // Kommentarmeldung zurücksetzen
+      setNoCommentsMessage(false);
     } catch (error) {
       console.error('Fehler beim Erstellen des Kommentars:', error);
-      // Hier könntest du eine Fehlermeldung anzeigen
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    const isConfirmed = window.confirm("Möchten Sie diesen Kommentar wirklich löschen?");
+    if (!isConfirmed) return;
+
+    try {
+      await deleteComment(commentId);
+      setComments(comments.filter((c) => c._id !== commentId));
+      setPopupMessage('Kommentar erfolgreich gelöscht!');
+    } catch (error) {
+      console.error('Fehler beim Löschen des Kommentars:', error);
+      setPopupMessage('Fehler beim Löschen des Kommentars!');
     }
   };
 
@@ -115,7 +128,18 @@ const Article = () => {
           ) : (
             comments.map((c) => (
               <div key={c._id} className="comment">
-                <strong>{c.username}:</strong> <span>{c.commentText}</span>
+                <strong className={userRole === 'admin' ? 'admin-username' : ''}>
+                  {c.username}:
+                </strong>
+                <span> {c.commentText}</span>
+                {userRole === 'admin' && (
+                  <button 
+                    className="delete-button" 
+                    onClick={() => handleDeleteComment(c._id)}
+                  >
+                    🗑️
+                  </button>
+                )}
               </div>
             ))
           )}
@@ -123,6 +147,6 @@ const Article = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Article;

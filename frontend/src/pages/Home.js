@@ -20,8 +20,9 @@ const Home = () => {
   }, []);
 
   // Den neuesten Artikel und die nächsten drei Artikel extrahieren
-  const latestArticle = articles.length > 0 ? articles[articles.length-1] : null; // Neuesten Artikel (erste in der Liste)
-  const nextThreeArticles = articles.length > 3 ? articles.slice(articles.length-4, articles.length-1) : []; // Die nächsten drei Artikel, falls verfügbar
+  const latestArticle = articles.length > 0 ? articles[articles.length - 1] : null;
+  const nextArticlesCount = articles.length > 3 ? 3 : articles.length - 1;
+  const nextArticles = articles.slice(articles.length - 1 - nextArticlesCount, articles.length - 1);
 
   return (
     <div className="home-container">
@@ -40,20 +41,18 @@ const Home = () => {
         <p>Keine Artikel verfügbar</p>
       )}
 
-      <div className="article-thumbnails">
-        {nextThreeArticles.length > 0 ? (
-          nextThreeArticles.map(article => (
-            <Link key={article._id} to={`/article/${article._id}`} className="article-thumbnail">
+      {nextArticles.length > 0 && (
+        <div className="article-thumbnails">
+          {nextArticles.map((article, index) => (
+            <Link key={article._id} to={`/article/${article._id}`} className={`article-thumbnail article-thumbnail-${index}`}>
               {article.thumbnailUrl && (
                 <img src={article.thumbnailUrl} alt={article.header} className="thumbnail-image" />
               )}
               <h3>{article.header}</h3>
             </Link>
-          ))
-        ) : (
-          <p>Keine weiteren Artikel verfügbar</p>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

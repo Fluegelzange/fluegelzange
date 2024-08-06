@@ -19,6 +19,7 @@ function App() {
   const [user, setUser] = useState('');
   const [popupMessage, setPopupMessage] = useState('');
 
+
   useEffect(() => {
     if (popupMessage) {
       const timer = setTimeout(() => {
@@ -59,11 +60,13 @@ function ConfirmEmail() {
   const location = useLocation();
 
   useEffect(() => {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL; // Backend-URL als Umgebungsvariable
+
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get('token');
 
     if (token) {
-      fetch(`http://localhost:5000/confirm-email?token=${token}`)
+      fetch(`${backendUrl}/confirm-email?token=${token}`)
         .then(response => {
           if (response.ok) {
             setPopupMessage('Ihre E-Mail-Adresse wurde erfolgreich verifiziert!');

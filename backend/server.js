@@ -4,18 +4,19 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cloudinary = require('cloudinary').v2; // Cloudinary einbinden
-const uri = "mongodb+srv://user1:user@cluster0.bge3kpm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+require('dotenv').config(); // dotenv einbinden
+
 const app = express();
 const port = process.env.PORT || 5000;
 
 // Cloudinary Konfiguration
 cloudinary.config({
-  cloud_name: 'dsw1adgtk', // Ersetze durch deinen Cloud-Namen
-  api_key: 'QZO23z9UR0CBDTlRe6dgsWCbdQo', // Ersetze durch deinen API-Schlüssel
-  api_secret: 'QZO23z9UR0CBDTlRe6dgsWCbdQo' // Ersetze durch dein API-Geheimnis
+  cloud_name: process.env.CLOUD_NAME, // Ersetze durch deinen Cloud-Namen
+  api_key: process.env.CLOUD_API_KEY, // Ersetze durch deinen API-Schlüssel
+  api_secret: process.env.CLOUD_API_SECRET // Ersetze durch dein API-Geheimnis
 });
 
-const client = new MongoClient(uri, {
+const client = new MongoClient(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverApi: {
@@ -144,12 +145,7 @@ app.post('/user', async (req, res) => {
   }
 });
 
-
-
-
 //##################Google############
-
-
 
 async function findUserByEmail(email) {
   try {
@@ -224,9 +220,7 @@ async function createUser(userData) {
   }
 }
 
-
 //#######################################################################
-
 
 // Verifizierung+Redirect
 app.get('/confirm-email', async (req, res) => {
@@ -303,7 +297,7 @@ app.post('/login', async (req, res) => {
 // ***************Kommentare*******************************
 app.post('/comments', async (req, res) => {
   try {
-    const { articleId, userId, commentText, userName } = req.body;
+    const { articleId, userId, commentText, username } = req.body;
 
     if (!articleId || !userId || !commentText) {
       return res.status(400).send("Invalid request: Missing required fields");
@@ -312,7 +306,7 @@ app.post('/comments', async (req, res) => {
     const newComment = {
       articleId: articleId,
       userId: userId,
-      username: userName,
+      username: username,
       commentText: commentText,
       createdAt: new Date()
     };
@@ -321,6 +315,30 @@ app.post('/comments', async (req, res) => {
     res.status(201).json(newComment);
   } catch (err) {
     console.error("Error saving comment: ", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+//Delete Kommentar
+
+app.delete('/comments/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).send("Invalid request: Missing comment ID");
+    }
+
+    // Überprüfen, ob der Kommentar existiert und löschen
+    const result = await client.db("fluegelzange").collection("comments").deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).send("Comment not found");
+    }
+
+    res.status(200).send("Comment deleted successfully");
+  } catch (err) {
+    console.error("Error deleting comment: ", err);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -335,7 +353,7 @@ app.get('/articles/:articleId/comments', async (req, res) => {
     }
 
     const comments = await client.db("fluegelzange").collection("comments")
-      .find({ articleId: new ObjectId(articleId) }) // Beachte, dass articleId als ObjectId konvertiert wird
+      .find({ articleId: articleId }) // Beachte, dass articleId als ObjectId konvertiert wird
       .toArray();
 
     res.status(200).json(comments);
