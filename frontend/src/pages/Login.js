@@ -100,7 +100,7 @@ const Login = () => {
         </GoogleOAuthProvider>
       </div>
       <div className="sign-in-link-container">
-        <p>Kein Konto? <a href="/SignIn">Jetzt registrieren</a></p>
+        <p>Kein Konto? <a href="/signin">Jetzt registrieren</a></p>
       </div>
     </div>
   );
