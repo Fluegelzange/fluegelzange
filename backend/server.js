@@ -122,13 +122,15 @@ app.post('/user', async (req, res) => {
     const existingUserByUsername = await client.db("fluegelzange").collection("user").findOne({ username });
     if (existingUserByUsername) {
       return res.status(400).json({ success: false, message: 'Username already taken' });
+       
     }
-
+    console.log("res.status1", res.status.json());
     // Überprüfen, ob die E-Mail bereits existiert
     const existingUserByEmail = await client.db("fluegelzange").collection("user").findOne({ usermail: email });
     if (existingUserByEmail) {
       return res.status(400).json({ success: false, message: 'Email already registered' });
     }
+    console.log("res.status1", res.status2.json());
 
     // Passwortvalidierung
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
@@ -137,7 +139,7 @@ app.post('/user', async (req, res) => {
 
     const newUser = {
       _id: new ObjectId(),
-      username,
+      username: username,
       userrole: "user",
       usermail: email,
       passwort: password,

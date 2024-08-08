@@ -92,6 +92,7 @@ export const createUser = async (user) => {
     email:user.email,
     password:hashPassword
   };
+  
   const response = await axios.post(`${backendUrl}/user`, usermithash);
     
   
