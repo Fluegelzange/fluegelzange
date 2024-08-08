@@ -120,21 +120,21 @@ app.post('/user', async (req, res) => {
     const email= req.body.email;
     const password= req.body.password;
 
-    // Überprüfen, ob der Benutzername bereits existiert
-    const existingUserByUsername = await client.db("fluegelzange").collection("user").findOne({ username });
-    if (existingUserByUsername) {
-      return res.status(200).json({ success: false, message: 'Username already taken' });
-       
-    }
-    // Überprüfen, ob die E-Mail bereits existiert
-    const existingUserByEmail = await client.db("fluegelzange").collection("user").findOne({ usermail: email });
-    if (existingUserByEmail) {
-      return res.status(200).json({ success: false, message: 'Email already registered' });
-    }
-
+//    // Überprüfen, ob der Benutzername bereits existiert
+//    const existingUserByUsername = await client.db("fluegelzange").collection("user").findOne({ username });
+//    if (existingUserByUsername) {
+//      return res.status(200).json({ success: false, message: 'Username already taken' });
+//       
+//    }
+//    // Überprüfen, ob die E-Mail bereits existiert
+//    const existingUserByEmail = await client.db("fluegelzange").collection("user").findOne({ usermail: email });
+//    if (existingUserByEmail) {
+//      return res.status(200).json({ success: false, message: 'Email already registered' });
+//    }
+//
     // Passwortvalidierung
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long and contain both letters and numbers.' });
+      return res.status(200).json({ success: false, message: 'Password must be at least 8 characters long and contain both letters and numbers.' });
     }
 
     const newUser = {
