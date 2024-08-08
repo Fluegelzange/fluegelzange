@@ -123,13 +123,13 @@ app.post('/user', async (req, res) => {
     // Überprüfen, ob der Benutzername bereits existiert
     const existingUserByUsername = await client.db("fluegelzange").collection("user").findOne({ username });
     if (existingUserByUsername) {
-      return res.status(400).json({ success: false, message: 'Username already taken' });
+      return res.status(200).json({ success: false, message: 'Username already taken' });
        
     }
     // Überprüfen, ob die E-Mail bereits existiert
     const existingUserByEmail = await client.db("fluegelzange").collection("user").findOne({ usermail: email });
     if (existingUserByEmail) {
-      return res.status(400).json({ success: false, message: 'Email already registered' });
+      return res.status(200).json({ success: false, message: 'Email already registered' });
     }
 
     // Passwortvalidierung
