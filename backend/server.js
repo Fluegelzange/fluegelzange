@@ -3,28 +3,24 @@ const axios = require('axios');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const cloudinary = require('cloudinary').v2; // Cloudinary einbinden
-require('dotenv').config(); // dotenv einbinden
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
 
 const app = express();
 
-// Cloudinary Konfiguration
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME, // Ersetze durch deinen Cloud-Namen
-  api_key: process.env.CLOUD_API_KEY, // Ersetze durch deinen API-Schlüssel
-  api_secret: process.env.CLOUD_API_SECRET // Ersetze durch dein API-Geheimnis
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET
 });
 
 const client = new MongoClient(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
   },
   tls: true,
-
 });
 
 async function run() {
@@ -34,45 +30,35 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } catch (err) {
     console.error("Error connecting to MongoDB: ", err);
+    process.exit(1);
   }
 }
 run().catch(console.dir);
 
-
-// Allow both domains
 const allowedOrigins = ['https://fluegel-zange.de', 'https://www.fluegel-zange.de'];
 
 app.use(cors({
-  origin: function(origin, callback){
-    // Handle requests with no origin (e.g., mobile apps, curl requests)
+  origin: function(origin, callback) {
     if (!origin) return callback(null, true);
-
-    // Check if the origin is in the list of allowed origins
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
-
     return callback(null, true);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure the methods you need are allowed
-  allowedHeaders: ['Content-Type', 'Authorization'] // Include any custom headers you might need
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.options('*', cors()); // Enable preflight for all routes
-
+app.options('*', cors());
 
 app.use(express.json());
 
-// Route für das Hochladen von Thumbnails
 app.post('/upload-thumbnail', async (req, res) => {
   try {
     const { filePath } = req.body;
-
-    // Hochladen zur Cloudinary
     const result = await cloudinary.uploader.upload(filePath);
-    const thumbnailUrl = result.secure_url; // URL des hochgeladenen Thumbnails
-
+    const thumbnailUrl = result.secure_url;
     res.status(201).json({ thumbnailUrl });
   } catch (err) {
     console.error("Error uploading thumbnail: ", err);
@@ -80,7 +66,7 @@ app.post('/upload-thumbnail', async (req, res) => {
   }
 });
 
-// ++++++++++++++++++++Articles++++++++++++++++++++++
+// Articles routes
 app.get('/articles', async (req, res) => {
   try {
     const articles = await client.db("fluegelzange").collection("articles").find().toArray();
@@ -94,9 +80,7 @@ app.get('/articles', async (req, res) => {
 app.get('/articles/:id', async (req, res) => {
   try {
     const articleId = req.params.id;
-    console.log(articleId);
     const article = await client.db("fluegelzange").collection("articles").findOne({ _id: new ObjectId(articleId) });
-    console.log("Artikel", article);
     if (!article) {
       return res.status(404).send("Article not found");
     }
@@ -123,24 +107,21 @@ app.post('/articles', async (req, res) => {
   }
 });
 
-// ++++++++++++++++++++++++++++++User++++++++++++++++++++++
+// User routes
 app.post('/user', async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Überprüfen, ob der Benutzername bereits existiert
     const existingUserByUsername = await client.db("fluegelzange").collection("user").findOne({ username });
     if (existingUserByUsername) {
       return res.status(400).json({ success: false, message: 'Username already taken' });
     }
 
-    // Überprüfen, ob die E-Mail bereits existiert
     const existingUserByEmail = await client.db("fluegelzange").collection("user").findOne({ usermail: email });
     if (existingUserByEmail) {
       return res.status(400).json({ success: false, message: 'Email already registered' });
     }
 
-    // Passwortvalidierung
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
       return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long and contain both letters and numbers.' });
     }
@@ -157,24 +138,16 @@ app.post('/user', async (req, res) => {
     await client.db("fluegelzange").collection("user").insertOne(newUser);
     res.status(201).json({ success: true, message: 'User successfully created!' });
 
-    const token = newUser._id.toString();
-
-    // Bestätigungs-E-Mail senden
-    // await EmailService.sendConfirmationEmail(newUser.usermail, newUser.username, token);
-
   } catch (err) {
     console.error("Error creating new user: ", err);
     res.status(500).send("Internal Server Error");
   }
 });
 
-//##################Google############
-
 async function findUserByEmail(email) {
   try {
     const db = client.db('fluegelzange');
     const user = await db.collection('user').findOne({ usermail: email });
-
     return user;
   } catch (err) {
     console.error('Fehler beim Finden des Benutzers:', err);
@@ -186,7 +159,6 @@ app.post('/google-login', async (req, res) => {
   const { token } = req.body;
 
   try {
-    // Überprüfe das Token bei Google
     const response = await axios.get(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`);
     const data = response.data;
 
@@ -196,20 +168,17 @@ app.post('/google-login', async (req, res) => {
 
     const { email, name } = data;
 
-    // Prüfe, ob der Benutzer bereits existiert
     let user = await findUserByEmail(email);
 
     if (!user) {
-      // Benutzer existiert nicht, erstelle einen neuen
-      user = await createUser({ username: name, email, password: 'temporarypassword' }); // Setze ein temporäres Passwort
+      user = await createUser({ username: name, email, password: 'temporarypassword' });
 
       if (user.error) {
         return res.status(400).json({ message: user.error });
       }
     }
 
-    // Führe die Anmeldung durch und gib die Benutzerdaten zurück
-    const userRole = 'user'; // Beispielrolle, hier anpassen
+    const userRole = 'user';
     res.json({
       userId: user._id.toString(),
       username: user.username,
@@ -224,14 +193,14 @@ app.post('/google-login', async (req, res) => {
 async function createUser(userData) {
   try {
     const db = client.db('fluegelzange');
-    
+
     const newUser = {
       _id: new ObjectId(),
       username: userData.username,
       userrole: 'user',
       usermail: userData.email,
       passwort: userData.password,
-      mitgoogle: true, // In der realen Anwendung, pass auf, dass das Passwort gehasht wird
+      mitgoogle: true,
       verifziert: false
     };
 
@@ -243,9 +212,7 @@ async function createUser(userData) {
   }
 }
 
-//#######################################################################
-
-// Verifizierung+Redirect
+// Email confirmation route
 app.get('/confirm-email', async (req, res) => {
   try {
     const token = req.query.token;
@@ -260,27 +227,16 @@ app.get('/confirm-email', async (req, res) => {
       return res.status(404).send('Nutzer nicht gefunden');
     }
 
-    // Logging vor dem Update
-    console.log('Nutzer vor Update:', user);
-
     const updateResult = await client.db("fluegelzange").collection("user").updateOne(
       { _id: new ObjectId(token) },
       { $set: { verifziert: true } }
     );
 
-    // Logging des Ergebnisses von updateOne
-    console.log('Update-Ergebnis:', updateResult);
-
     if (updateResult.modifiedCount === 1) {
-      console.log('Nutzer erfolgreich verifiziert:', token);
-      // Umleitung zur Startseite mit verified Parameter
       return res.redirect('http://localhost:3000?verified=true');
     } else if (updateResult.matchedCount === 1 && user.verifziert) {
-      console.log('Nutzer war bereits verifiziert:', token);
-      // Umleitung zur Startseite mit verified Parameter
       return res.redirect('http://localhost:3000?verified=true');
     } else {
-      console.error('Fehler beim Aktualisieren des Nutzers:', token);
       return res.status(500).send("Fehler beim Aktualisieren des Nutzers");
     }
   } catch (err) {
@@ -289,27 +245,22 @@ app.get('/confirm-email', async (req, res) => {
   }
 });
 
-// ++++++++++USER++LOGIN++++++++++++++++++++++++
+// User login
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Benutzer in der Datenbank suchen
     const user = await client.db("fluegelzange").collection("user").findOne({ username });
 
     if (!user) {
-      console.error("Benutzer nicht gefunden:", username);
       return res.status(400).json("Benutzername oder Passwort ist falsch");
     }
 
-    // Passwort überprüfen
     const isPasswordValid = await bcrypt.compare(password, user.passwort);
     if (!isPasswordValid) {
-      console.error("Ungültiges Passwort für Benutzer:", username);
       return res.status(400).json("Benutzername oder Passwort ist falsch");
     }
 
-    // Wenn alles korrekt ist, Rückmeldung geben
     res.status(200).json({ message: "Login erfolgreich", userId: user._id, role: user.userrole, username: user.username });
   } catch (err) {
     console.error("Fehler beim Login:", err);
@@ -317,7 +268,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// ***************Kommentare*******************************
+// Comments routes
 app.post('/comments', async (req, res) => {
   try {
     const { articleId, userId, commentText, username } = req.body;
@@ -342,8 +293,6 @@ app.post('/comments', async (req, res) => {
   }
 });
 
-//Delete Kommentar
-
 app.delete('/comments/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -352,7 +301,6 @@ app.delete('/comments/:id', async (req, res) => {
       return res.status(400).send("Invalid request: Missing comment ID");
     }
 
-    // Überprüfen, ob der Kommentar existiert und löschen
     const result = await client.db("fluegelzange").collection("comments").deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
@@ -366,7 +314,6 @@ app.delete('/comments/:id', async (req, res) => {
   }
 });
 
-// Kommentare zu einem Artikel abrufen
 app.get('/articles/:articleId/comments', async (req, res) => {
   try {
     const { articleId } = req.params;
@@ -376,7 +323,7 @@ app.get('/articles/:articleId/comments', async (req, res) => {
     }
 
     const comments = await client.db("fluegelzange").collection("comments")
-      .find({ articleId: articleId }) // Beachte, dass articleId als ObjectId konvertiert wird
+      .find({ articleId: articleId })
       .toArray();
 
     res.status(200).json(comments);
@@ -386,6 +333,7 @@ app.get('/articles/:articleId/comments', async (req, res) => {
   }
 });
 
-app.listen( () => {
-  console.log(`Server läuft auf ${process.env.SERVER_URL}`);
+const PORT = process.env.PORT || 3000; // Dynamic port assignment
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
