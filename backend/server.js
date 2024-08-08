@@ -44,14 +44,24 @@ const allowedOrigins = ['https://fluegel-zange.de', 'https://www.fluegel-zange.d
 
 app.use(cors({
   origin: function(origin, callback){
+    // Handle requests with no origin (e.g., mobile apps, curl requests)
     if (!origin) return callback(null, true);
+
+    // Check if the origin is in the list of allowed origins
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
+
     return callback(null, true);
-  }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure the methods you need are allowed
+  allowedHeaders: ['Content-Type', 'Authorization'] // Include any custom headers you might need
 }));
+
+app.options('*', cors()); // Enable preflight for all routes
+
+
 app.use(express.json());
 
 // Route für das Hochladen von Thumbnails
