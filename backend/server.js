@@ -24,7 +24,6 @@ const client = new MongoClient(process.env.MONGO_URI, {
     deprecationErrors: true,
   },
   tls: true,
-      tlsAllowInvalidCertificates: true, // Diese Option erlaubt die Verbindung auch bei ungültigen Zertifikaten (zum Testen)
 
 });
 
