@@ -75,28 +75,27 @@ export const uploadThumbnail = async (formData) => {
 
 //User
 export const createUser = async (user) => {
-  
 
-  if (!user.username || !user.email || !user.password) {
+  const { username, email, password } = user;
+
+  if (!username || !email || !password) {
     throw new Error('Missing required fields');
   }
 
   // Passwort hashen
-  const hashPassword = await bcrypt.hash(user.password, 10); // 10 ist die Anzahl der Salt-Runden
-
-  const userWithHash = {
-    username: user.username,
-    email: user.email,
-    password: hashPassword,
+  const hashPassword = await bcrypt.hash(password, 10); // 10 ist die Anzahl der Salt-Runden
+  
+  // Ausgabe des Hashes in der Konsole
+  console.log('Hashed Password:', hashPassword); 
+  const usermithash={
+    username:user.username,
+    email:user.email,
+    password:hashPassword
   };
-
-  try {
-    const response = await axios.post(`${backendUrl}/user`, userWithHash);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating user:', error);
-    throw new Error('Error creating user');
-  }
+  const response = await axios.post(`${backendUrl}/user`, usermithash);
+    
+  
+  return response.data;
 };
 
 
