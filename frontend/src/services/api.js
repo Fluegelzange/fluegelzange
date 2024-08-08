@@ -75,18 +75,18 @@ export const uploadThumbnail = async (formData) => {
 
 //User
 export const createUser = async (user) => {
-  const { username, email, password } = user;
+  
 
-  if (!username || !email || !password) {
+  if (!user.username || !user.email || !user.password) {
     throw new Error('Missing required fields');
   }
 
   // Passwort hashen
-  const hashPassword = await bcrypt.hash(password, 10); // 10 ist die Anzahl der Salt-Runden
+  const hashPassword = await bcrypt.hash(user.password, 10); // 10 ist die Anzahl der Salt-Runden
 
   const userWithHash = {
-    username: username,
-    email: email,
+    username: user.username,
+    email: user.email,
     password: hashPassword,
   };
 
