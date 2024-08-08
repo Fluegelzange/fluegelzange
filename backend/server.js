@@ -38,8 +38,15 @@ async function run() {
 }
 run().catch(console.dir);
 
+const allowedOrigins = [process.env.FRONTEND_URL2, process.env.FRONTEND_URL];
 app.use(cors({
-  origin: process.env.FRONTEND_URL // z.B. `https://deine-domain.com`
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
 app.use(express.json());
 
