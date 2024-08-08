@@ -107,10 +107,13 @@ app.post('/articles', async (req, res) => {
   }
 });
 
-// User routes
 app.post('/user', async (req, res) => {
   try {
     const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
 
     const existingUserByUsername = await client.db("fluegelzange").collection("user").findOne({ username });
     if (existingUserByUsername) {
@@ -126,15 +129,18 @@ app.post('/user', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long and contain both letters and numbers.' });
     }
 
+    // Hashing the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = {
       _id: new ObjectId(),
       username,
       userrole: "user",
       usermail: email,
-      passwort: password,
+      passwort: hashedPassword, // Store hashed password
       verifziert: false
     };
-
+ 
     await client.db("fluegelzange").collection("user").insertOne(newUser);
     res.status(201).json({ success: true, message: 'User successfully created!' });
 
