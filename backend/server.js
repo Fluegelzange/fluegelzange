@@ -134,7 +134,7 @@ app.post('/user', async (req, res) => {
 //
     // Passwortvalidierung
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
-      return res.status(200).json({ success: false, message: 'Password must be at least 8 characters long and contain both letters and numbers.' });
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long and contain both letters and numbers.' });
     }
 
     const newUser = {
