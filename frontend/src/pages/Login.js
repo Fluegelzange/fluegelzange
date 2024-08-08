@@ -1,6 +1,6 @@
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import React, { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
 import './Login.css';
 
@@ -100,8 +100,8 @@ const Login = () => {
         </GoogleOAuthProvider>
       </div>
       <div className="sign-in-link-container">
-        <p>Kein Konto? <a href="/signin">Jetzt registrieren</a></p>
-      </div>
+      <p>Kein Konto? <Link to="/signin">Jetzt registrieren</Link></p>
+            </div>
     </div>
   );
 }

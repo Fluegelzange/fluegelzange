@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+import { Link, Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import Popup from './components/Popup';
@@ -99,7 +99,7 @@ function Footer() {
   return (
     <footer>
       {popupMessage && <Popup message={popupMessage} />}
-      <p><a href="/about">About Flügelzange</a></p>
+      <p><Link to="/about">About Flügelzange</Link></p>
     </footer>
   );
 }
