@@ -8,6 +8,7 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [feedback, setFeedback] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false); // Neue State-Variable für Erfolg
 
   const validatePassword = (password) => {
     return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
@@ -18,11 +19,13 @@ const SignIn = () => {
 
     if (!validatePassword(password)) {
       setFeedback("Passwort muss mindestens 8 Zeichen lang sein und sowohl Zahlen als auch Buchstaben enthalten.");
+      setIsSuccess(false);
       return;
     }
 
     if (password !== confirmPassword) {
       setFeedback("Passwords do not match!");
+      setIsSuccess(false);
       return;
     }
 
@@ -30,13 +33,16 @@ const SignIn = () => {
       const newUser = { username, email, password };
       const result = await createUser(newUser);
       if (result.success) {
-        setFeedback("User successfully created!");
+        setFeedback("Nutzer erfolgreich erstellt! Sie können sich nun anmelden.");
+        setIsSuccess(true); // Erfolg
       } else {
-        setFeedback(result.message); // Feedback from server (e.g., username or email already exists)
+        setFeedback(result.message); 
+        setIsSuccess(false); // Fehler
       }
     } catch (error) {
       console.error("Error creating user: ", error);
       setFeedback("Nutzername oder Mailadresse schon registriert.");
+      setIsSuccess(false); // Fehler
     }
   };
 
@@ -69,7 +75,7 @@ const SignIn = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <button type="submit">Sign In</button>
-        {feedback && <p className="feedback">{feedback}</p>}
+        {feedback && <p className={`feedback ${isSuccess ? 'success' : 'error'}`}>{feedback}</p>}
       </form>
     </div>
   );

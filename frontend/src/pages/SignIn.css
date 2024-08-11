@@ -53,7 +53,14 @@
 }
 
 .feedback {
-    color: #e74c3c; /* Rote Farbe für Fehlermeldungen */
     margin-top: 10px;
     font-size: 14px;
+}
+
+.feedback.error {
+    color: #e74c3c; /* Rot für Fehler */
+}
+
+.feedback.success {
+    color: #28a745; /* Grün für Erfolg */
 }
