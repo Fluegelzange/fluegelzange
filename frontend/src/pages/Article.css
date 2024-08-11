@@ -1,6 +1,6 @@
 .article-container {
   padding: 2rem;
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -16,7 +16,7 @@
 .article-thumbnail {
   display: block;
   width: 100%;
-  max-height: 400px;
+  max-height: 30%;
   object-fit: cover;
   margin-bottom: 1rem;
   border-radius: 8px;
@@ -43,7 +43,7 @@
 
 
 .comment-section {
-  width: 800px; /* Gleiche maximale Breite wie der Artikel */
+  width: 100%; /* Gleiche maximale Breite wie der Artikel */
   margin: 0 auto; /* Zentrieren der Kommentar-Sektion */
   padding: 20px;
   background-color: #f9f9f9;
