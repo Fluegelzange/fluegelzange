@@ -94,6 +94,7 @@ export const createUser = async (user) => {
   };
 
   const response = await axios.post(`${backendUrl}/user`, usermithash);
+  console.log("Response from server: ", response);
   console.log(response.data);
   
   return response.data;
