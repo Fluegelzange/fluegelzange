@@ -47,7 +47,6 @@
 
 /* Styling für den Google Login Container */
 .google-login-container {
-  margin-top: 20px;
   padding: 10px;  /* Abstand zwischen dem Formular und Google-Login */
   border: none;
   border-radius: 4px;
