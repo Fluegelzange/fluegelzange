@@ -137,14 +137,15 @@ app.post('/user', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long and contain both letters and numbers.' });
     }
 
-    const newUser = {
-      _id: new ObjectId(),
-      username: username,
-      userrole: "user",
-      usermail: email,
-      passwort: password,
-      verifziert: false
-    };
+  const hashedPassword = await bcrypt.hash(password, 10); 
+  const newUser = {
+  _id: new ObjectId(),
+  username: username,
+  userrole: "user",
+  email: email,
+  passwort: hashedPassword,
+  verifziert: false
+};
     console.log(newUser);
     await client.db("fluegelzange").collection("user").insertOne(newUser);
     res.status(201).json({ success: true, message: 'User successfully created!' });
@@ -165,7 +166,7 @@ app.post('/user', async (req, res) => {
 async function findUserByEmail(email) {
   try {
     const db = client.db('fluegelzange');
-    const user = await db.collection('user').findOne({ usermail: email });
+    const user = await db.collection('user').findOne({ email: email });
 
     return user;
   } catch (err) {

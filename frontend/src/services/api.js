@@ -1,5 +1,4 @@
 import axios from 'axios';
-import bcrypt from 'bcryptjs';
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 const CLOUD_URL = process.env.REACT_APP_CLOUD_URL;
@@ -83,14 +82,11 @@ export const createUser = async (user) => {
   }
 
   // Passwort hashen
-  const hashPassword = await bcrypt.hash(password, 10); // 10 ist die Anzahl der Salt-Runden
   
-  // Ausgabe des Hashes in der Konsole
-  console.log('Hashed Password:', hashPassword); 
   const usermithash={
     username:user.username,
     email:user.email,
-    password:hashPassword
+    password:user.password
   };
 
   const response = await axios.post(`${backendUrl}/user`, usermithash);
