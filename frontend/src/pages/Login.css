@@ -79,3 +79,21 @@
 .sign-in-link-container a:hover {
   text-decoration: underline;
 }
+
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Stellt sicher, dass der Container den gesamten verfügbaren Platz einnimmt */
+.login-container {
+  min-height: calc(100vh - 20px); /* Berechnet die Höhe unter Berücksichtigung des Paddings */
+  margin-bottom: 0; /* Entfernt den unteren Rand */
+  padding-bottom: 0; /* Entfernt das Padding am unteren Rand */
+}
