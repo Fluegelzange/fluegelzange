@@ -1,21 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
-import { fetchArticles } from '../services/api'; // Importiere die fetchArticles Funktion
+import logo from '../public/logo512.png'; // Importiere das Logo
+import { fetchArticles } from '../services/api';
 import './Header.css';
 
 const Header = () => {
   const { isAuthenticated, setIsAuthenticated, setPopupMessage, userRole, setUserRole } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Zustand für die Artikel und die Suchergebnisse
   const [articles, setArticles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [noResultsMessage, setNoResultsMessage] = useState('');
 
   useEffect(() => {
-    // Artikel beim Laden der Komponente abrufen
     const loadArticles = async () => {
       const articles = await fetchArticles();
       setArticles(articles);
@@ -24,21 +23,13 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    // Suchergebnisse filtern und sortieren, wenn sich die Suchanfrage ändert
     if (searchQuery.length > 0) {
       let results = articles.filter(article =>
         article.header.toLowerCase().includes(searchQuery.toLowerCase())
       );
-
-      // Ergebnisse alphabetisch sortieren
       results = results.sort((a, b) => a.header.localeCompare(b.header));
-
       setFilteredArticles(results);
-      if (results.length === 0) {
-        setNoResultsMessage('Keine Ergebnisse gefunden');
-      } else {
-        setNoResultsMessage('');
-      }
+      setNoResultsMessage(results.length === 0 ? 'Keine Ergebnisse gefunden' : '');
     } else {
       setFilteredArticles([]);
       setNoResultsMessage('');
@@ -46,13 +37,12 @@ const Header = () => {
   }, [searchQuery, articles]);
 
   const handleArticleClick = () => {
-    // Suchleiste zurücksetzen
     setSearchQuery('');
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setUserRole('guest'); // Setze userRole auf 'guest' beim Ausloggen
+    setUserRole('guest');
     setPopupMessage('Erfolgreich ausgeloggt!');
     navigate('/');
   };
@@ -60,6 +50,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-logo">
+      <Link to="/"><img src={logo} alt="Logo" className="logo" /></Link> {/* Logo hinzugefügt */}
         <h1><Link to="/">Flügelzange</Link></h1>
       </div>
       <div className="header-content">
@@ -97,7 +88,7 @@ const Header = () => {
       <nav className="header-nav">
         <ul>
           <li>
-            <Link className="header-button" to="/archive">Archiv</Link> {/* Link zum Archiv */}
+            <Link className="header-button" to="/archive">Archiv</Link>
           </li>
           {isAuthenticated ? (
             <li>
