@@ -151,6 +151,13 @@ h1 a {
     width: 100%; /* Suchleiste füllt die gesamte Breite auf mobilen Geräten */
   }
 
+  
+  .search-suggestions {
+    width: 80%; /* Breite der Suchergebnisbox auf mobilen Geräten */
+    left: 10%; /* Zentriert die Suchergebnisbox */
+  }
+
+
   .header-logo img.logo {
     margin-right: 0; /* Kein Abstand zwischen Logo und Suchleiste auf mobilen Geräten */
   }
