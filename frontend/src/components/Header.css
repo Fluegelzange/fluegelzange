@@ -56,7 +56,7 @@
 .header-nav ul {
   list-style: none;
   display: flex;
-  align-items: center; /* Neu: Buttons vertikal zentrieren */
+  align-items: center; /* Buttons vertikal zentrieren */
   margin: 0;
   padding: 0;
 }
@@ -76,8 +76,8 @@
   border-radius: 4px;
   transition: background-color 0.3s ease;
   display: flex;
-  align-items: center; /* Neu: Text innerhalb des Buttons zentrieren */
-  justify-content: center; /* Neu: Text innerhalb des Buttons zentrieren */
+  align-items: center; /* Text innerhalb des Buttons zentrieren */
+  justify-content: center; /* Text innerhalb des Buttons zentrieren */
 }
 
 .header-button:hover {
@@ -134,4 +134,23 @@ h1 a {
   margin: 0;
   text-align: left;
   color: #999;
+}
+
+/* Media Query für mobile Geräte */
+@media (max-width: 768px) {
+  .header-logo {
+    display: none; /* Versteckt das Logo auf mobilen Geräten */
+  }
+
+  .header-content {
+    margin: 0 1rem; /* Weniger Abstand auf mobilen Geräten */
+  }
+
+  .header-search input {
+    width: 100%; /* Suchleiste füllt die gesamte Breite auf mobilen Geräten */
+  }
+
+  .header-links {
+    margin-right: 1rem; /* Weniger Abstand auf mobilen Geräten */
+  }
 }
