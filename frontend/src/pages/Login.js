@@ -1,4 +1,3 @@
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
@@ -91,19 +90,21 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
-      <div className="google-login-container">
-        <GoogleOAuthProvider clientId={googleClientId}>
-          <GoogleLogin
-            onSuccess={handleGoogleLoginSuccess}
-            onError={(error) => console.error('Fehler bei Google Login:', error)}
-          />
-        </GoogleOAuthProvider>
-      </div>
+      
       <div className="sign-in-link-container">
       <p>Kein Konto? <Link to="/signin">Jetzt registrieren</Link></p>
             </div>
     </div>
   );
 }
+// Google Authprovider:
+//<div className="google-login-container">
+//        <GoogleOAuthProvider clientId={googleClientId}>
+//          <GoogleLogin
+//            onSuccess={handleGoogleLoginSuccess}
+//            onError={(error) => console.error('Fehler bei Google Login:', error)}
+//          />
+//        </GoogleOAuthProvider>
+//      </div>
 
 export default Login;
